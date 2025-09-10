@@ -10,14 +10,11 @@ public class InstagramSharePlugin: CAPPlugin, CAPBridgedPlugin {
     public let identifier = "InstagramSharePlugin"
     public let jsName = "InstagramShare"
     public let pluginMethods: [CAPPluginMethod] = [
-        CAPPluginMethod(name: "echo", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "shareToInstagramStories", returnType: CAPPluginReturnPromise)
     ]
     private let implementation = InstagramShare()
 
-    @objc func echo(_ call: CAPPluginCall) {
-        let value = call.getString("value") ?? ""
-        call.resolve([
-            "value": implementation.echo(value)
-        ])
+    @objc func shareToInstagramStories(_ call: CAPPluginCall) {
+        implementation.shareToInstagramStories(call)
     }
 }

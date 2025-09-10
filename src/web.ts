@@ -1,10 +1,12 @@
-import { WebPlugin } from '@capacitor/core';
+import { WebPlugin } from "@capacitor/core";
 
-import type { InstagramSharePlugin } from './definitions';
+import type { InstagramSharePlugin } from "./definitions";
 
-export class InstagramShareWeb extends WebPlugin implements InstagramSharePlugin {
-  async echo(options: { value: string }): Promise<{ value: string }> {
-    console.log('ECHO', options);
-    return options;
+export class InstagramShareWeb
+  extends WebPlugin
+  implements InstagramSharePlugin
+{
+  async shareToInstagramStories(): Promise<void> {
+    throw new Error("Not implemented on web");
   }
 }
