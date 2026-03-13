@@ -13,6 +13,6 @@ public class InstagramSharePlugin extends Plugin {
 
     @PluginMethod
     public void shareToInstagramStories(PluginCall call) {
-        implementation.shareToInstagramStories(call);
+        implementation.shareToInstagramStories(call, getContext(), getActivity());
     }
 }

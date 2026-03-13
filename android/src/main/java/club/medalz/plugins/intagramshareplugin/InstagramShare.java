@@ -10,13 +10,10 @@ import java.io.File;
 
 public class InstagramShare {
 
-    public void shareToInstagramStories(PluginCall call) {
+    public void shareToInstagramStories(PluginCall call, Context context, Activity activity) {
         String appId = call.getString("appId");
-        String backgroundImagePath = call.getString("backgroundImagePath"); // caminho local
-        String stickerImagePath = call.getString("stickerImagePath"); // opcional
-
-        Context context = call.getContext();
-        Activity activity = call.getActivity();
+        String backgroundImagePath = call.getString("backgroundImagePath");
+        String stickerImagePath = call.getString("stickerImagePath");
 
         Intent intent = new Intent("com.instagram.share.ADD_TO_STORY");
         intent.putExtra("source_application", appId);
