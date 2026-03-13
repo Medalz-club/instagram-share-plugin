@@ -8,26 +8,38 @@ import UIKit
         let bgPath = call.getString("backgroundImagePath")
         let stickerPath = call.getString("stickerImagePath")
 
-        let urlScheme = URL(string: "instagram-stories://share?source_application=\(appId)")!
+        var items: [[String: Any]] = []
 
-        if UIApplication.shared.canOpenURL(urlScheme) {
-            var items: [[String: Any]] = []
-
-            if let bgPath = bgPath, let imageData = try? Data(contentsOf: URL(fileURLWithPath: bgPath)) {
+        if let bgPath = bgPath {
+            let bgUrl = bgPath.hasPrefix("file://") ? URL(string: bgPath) : URL(fileURLWithPath: bgPath)
+            if let bgUrl = bgUrl, let imageData = try? Data(contentsOf: bgUrl) {
                 items.append(["com.instagram.sharedSticker.backgroundImage": imageData])
             }
+        }
 
-            if let stickerPath = stickerPath, let stickerData = try? Data(contentsOf: URL(fileURLWithPath: stickerPath)) {
+        if let stickerPath = stickerPath {
+            let stickerUrl = stickerPath.hasPrefix("file://") ? URL(string: stickerPath) : URL(fileURLWithPath: stickerPath)
+            if let stickerUrl = stickerUrl, let stickerData = try? Data(contentsOf: stickerUrl) {
                 items.append(["com.instagram.sharedSticker.stickerImage": stickerData])
             }
+        }
 
-            let pasteboardOptions = [UIPasteboard.OptionsKey.expirationDate: Date().addingTimeInterval(300)]
-            UIPasteboard.general.setItems(items, options: pasteboardOptions)
+        DispatchQueue.main.async {
+            let urlScheme = URL(string: "instagram-stories://share?source_application=\(appId)")!
 
-            UIApplication.shared.open(urlScheme, options: [:], completionHandler: nil)
-            call.resolve()
-        } else {
-            call.reject("Instagram not installed")
+            guard UIApplication.shared.canOpenURL(urlScheme) else {
+                call.reject("Instagram not installed")
+                return
+            }
+
+            if !items.isEmpty {
+                let pasteboardOptions = [UIPasteboard.OptionsKey.expirationDate: Date().addingTimeInterval(300)]
+                UIPasteboard.general.setItems(items, options: pasteboardOptions)
+            }
+
+            UIApplication.shared.open(urlScheme, options: [:]) { _ in
+                call.resolve()
+            }
         }
     }
 }
